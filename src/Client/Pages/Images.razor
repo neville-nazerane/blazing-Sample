@@ -1,0 +1,19 @@
+﻿@page "/Images"
+
+<img src="@imageDataUrl" />
+
+<InputFile OnChange=OnImageUploadedAsync />
+
+<button class="btn btn-success" @onclick=UploadToBlobAsync>Upload</button>
+
+
+@if (files is not null)
+{
+    foreach (var file in files)
+    {
+        <div>
+            <a href="@file" target="_blank">@file</a>
+            <button class="btn btn-sm btn-danger" @onclick="async () => await DeleteAsync(file)">Delete</button>
+        </div>
+    }
+}
