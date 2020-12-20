@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Api
 {
@@ -33,8 +34,16 @@ namespace Api
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req,
             [Blob("files", FileAccess.Write)]CloudBlobContainer container)
         {
-            var files = container.ListBlobs().Select(c => c.Uri.AbsoluteUri).ToArray();
-            return new OkObjectResult(files);
+            var urls = new List<string>();
+            BlobContinuationToken token = null;
+            do
+            {
+                var segs = await container.ListBlobsSegmentedAsync(token);
+                urls.AddRange(segs.Results.Select(f => f.Uri.AbsoluteUri));
+                token = segs.ContinuationToken;
+            } while (token is not null);
+
+            return new OkObjectResult(urls);
         }
 
         [FunctionName("deleteData")]
