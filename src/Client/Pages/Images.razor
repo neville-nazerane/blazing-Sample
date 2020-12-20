@@ -13,6 +13,7 @@
     {
         <div>
             <a href="@file" target="_blank">@file</a>
+            <button class="btn btn-sm btn-danger" @onclick="async () => await DeleteAsync(file)">Delete</button>
         </div>
     }
 }

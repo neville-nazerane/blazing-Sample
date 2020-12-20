@@ -52,5 +52,12 @@ namespace Client.Pages
             files = await HttpClient.GetFromJsonAsync<string[]>("api/listData");
         }
 
+        async Task DeleteAsync(string file)
+        {
+            var name = file.Split("\\/".ToCharArray()).Last();
+            await HttpClient.DeleteAsync($"api/deleteData/{name}");
+            await PullListAsync();
+        }
+
     }
 }

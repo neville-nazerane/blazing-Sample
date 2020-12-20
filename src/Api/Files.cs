@@ -37,5 +37,13 @@ namespace Api
             return new OkObjectResult(files);
         }
 
+        [FunctionName("deleteData")]
+        public static async Task DeleteData(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "deleteData/{filename}")] HttpRequest req,
+            [Blob("files/{filename}", FileAccess.Write)] CloudBlockBlob blob)
+        {
+            await blob.DeleteAsync();
+        }
+
     }
 }
