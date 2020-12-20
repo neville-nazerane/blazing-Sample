@@ -32,7 +32,7 @@ namespace Api
         [FunctionName("listData")]
         public static async Task<IActionResult> ListData(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req,
-            [Blob("files", FileAccess.Write, Connection = "storage")]CloudBlobContainer container)
+            [Blob("files", FileAccess.Write)]CloudBlobContainer container)
         {
             var urls = new List<string>();
             BlobContinuationToken token = null;
