@@ -12,7 +12,9 @@
     foreach (var file in files)
     {
         <div>
-            <a href="@file" target="_blank">@file</a>
+            <a href="@file" target="_blank">
+                <img src="@file" alt="@file.Split("\\/".ToCharArray()).Last()"  />
+            </a>
             <button class="btn btn-sm btn-danger" @onclick="async () => await DeleteAsync(file)">Delete</button>
         </div>
     }
