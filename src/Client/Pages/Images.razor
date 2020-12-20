@@ -2,6 +2,17 @@
 
 <img src="@imageDataUrl" />
 
-<InputFile OnChange=OnImageUploaded />
+<InputFile OnChange=OnImageUploadedAsync />
 
-<button class="btn btn-success" @onclick=UploadToBlob>Upload</button>
+<button class="btn btn-success" @onclick=UploadToBlobAsync>Upload</button>
+
+
+@if (files is not null)
+{
+    foreach (var file in files)
+    {
+        <div>
+            <a href="@file" target="_blank">@file</a>
+        </div>
+    }
+}

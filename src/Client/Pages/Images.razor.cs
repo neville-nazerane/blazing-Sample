@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
@@ -17,10 +18,18 @@ namespace Client.Pages
         private string imageDataUrl;
         private IBrowserFile selectedFile;
 
+        string[] files;
+
         [Inject]
         public HttpClient HttpClient { get; set; }
 
-        private async Task OnImageUploaded(InputFileChangeEventArgs e)
+        protected override async Task OnInitializedAsync()
+        {
+            await base.OnInitializedAsync();
+            await PullListAsync();
+        }
+
+        private async Task OnImageUploadedAsync(InputFileChangeEventArgs e)
         {
             selectedFile = e.File;
             var resizedImageFile = await e.File.RequestImageFileAsync(format, 100, 100);
@@ -29,12 +38,18 @@ namespace Client.Pages
             imageDataUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
         }
 
-        private async Task UploadToBlob()
+        private async Task UploadToBlobAsync()
         {
             using var stream = selectedFile.OpenReadStream();
             var content = new StreamContent(stream);
             content.Headers.Add("type", selectedFile.ContentType);
             await HttpClient.PostAsync($"api/uploadData/{selectedFile.Name}", content);
+            await PullListAsync();
+        }
+
+        async Task PullListAsync()
+        {
+            files = await HttpClient.GetFromJsonAsync<string[]>("api/listData");
         }
 
     }
